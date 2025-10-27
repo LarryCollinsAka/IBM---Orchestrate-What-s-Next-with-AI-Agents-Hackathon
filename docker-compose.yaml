@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  watsonx-dev:
+    build: .
+    volumes:
+      - ./:/app
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"
+    command: bash
+    stdin_open: true
+    tty: true
