@@ -1,0 +1,32 @@
+servers:
+  - url: http://host.docker.internal:8000
+
+openapi: 3.0.1
+info: { title: CostCalc API, version: "1.0.0" }
+paths:
+  /cost/calc:
+    post:
+      summary: Calculate processing costs for a given crop and option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                crop: { type: string, example: "cassava" }
+                option: { type: string, example: "gari" }
+                quantity_tons: { type: number, example: 3 }
+                packaging: { type: string, example: "PP_bag_50kg" }
+      responses:
+        "200":
+          description: Cost breakdown
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  capex_usd: { type: number, example: 850 }
+                  opex_per_kg_usd: { type: number, example: 0.12 }
+                  yield_percent: { type: number, example: 70 }
+                  unit_cost_per_kg_usd: { type: number, example: 0.18 }

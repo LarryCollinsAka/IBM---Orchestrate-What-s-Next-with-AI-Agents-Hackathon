@@ -1,0 +1,27 @@
+servers:
+  - url: http://host.docker.internal:8000
+
+openapi: 3.0.1
+info: { title: Weather Mock API, version: "1.0.0" }
+paths:
+  /weather/forecast:
+    get:
+      summary: 5-day forecast for simple feasibility checks
+      parameters:
+        - in: query
+          name: location
+          schema: { type: string, example: "Ibadan,NG" }
+        - in: query
+          name: days
+          schema: { type: integer, example: 5 }
+      responses:
+        "200":
+          description: Simple forecast
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  risk_rain_next_5d: { type: boolean, example: true }
+                  avg_temp_c: { type: number, example: 29.5 }
+                  note: { type: string, example: "High chance of rain; prefer covered drying." }

@@ -1,4 +1,15 @@
-".env" 
-
-.env
 IBMIAM.txt
+.env 
+
+__pycache__/
+venv/
+
+node_modules
+npm-debug.log
+
+# Docker
+docker-compose.override.yml
+
+# OS junk
+.DS_Store
+Thumbs.db
