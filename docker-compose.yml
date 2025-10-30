@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: orchestrate-web
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    # This is only here because I want a hot-reload in dev; otherwise, we will remove volumes for production-like runs
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - mock-api
+
+  mock-api:
+    image: python:3.11-slim
+    container_name: orchestrate-mock-api
+    working_dir: /app
+    
+    volumes:
+      - ./:/app
+    
+    command: >
+      bash -lc "pip install --no-cache-dir fastapi uvicorn &&
+                uvicorn src.api.mock_tools:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
