@@ -1,0 +1,51 @@
+# =============================================================
+# openapi-climate.yaml
+# =============================================================
+# This skill teaches the agent how to use the Climate Trace API.
+#
+openapi: 3.0.0
+info:
+  title: "Climate Trace Skill"
+  version: "1.0.0"
+  description: "Gets country-level emissions data for a specific sector."
+servers:
+  - url: https://api.climatetrace.org
+    description: "Climate Trace API Server"
+paths:
+  /v6/country/emissions:
+    get:
+      summary: "Get country emissions by sector"
+      description: "Gets a country's emissions data for a specific sector (e.g., 'agriculture')."
+      operationId: "getCountryEmissions"
+      parameters:
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The three-letter ISO code for the country (e.g., 'CMR', 'NGA', 'IND')."
+        - name: sector
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The sector to get data for (e.g., 'agriculture', 'manufacturing')."
+      responses:
+        '200':
+          description: "A list of emissions data."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    emissions:
+                      type: object
+                      properties:
+                        value:
+                          type: number
+                        gas:
+                          type: string
+                    time:
+                      type: string

@@ -5,17 +5,17 @@
  * (Cameroon: Cassava, Cocoa, Palm Oil)
  * (India: Rice, Wheat)
  * (Nigeria: Yam, Cassava, Maize)
- * This is the "skill" our agent will call.
  */
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3000; 
+const port = 3000; // Vercel will manage this
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 
+// --- FINALIZED Localized Mock Data (Based on Team Chat) ---
 
 const processingData = {
   "Cameroon": {
@@ -80,12 +80,12 @@ const marketData = {
   "Bobolo (Cassava Sticks)": { "product": "Bobolo", "current_price_per_kg": 1.50, "top_buyer": "Yaoundé Markets" },
   "Refined Palm Oil (RBD)": { "product": "Refined Palm Oil", "current_price_per_kg": 1.80, "top_buyer": "Global Foods Inc." },
   "Cocoa Powder": { "product": "Cocoa Powder", "current_price_per_kg": 4.50, "top_buyer": "EU Importers" },
-  
+
   // Nigeria
   "Ogi (Pap)": { "product": "Ogi (Pap)", "current_price_per_kg": 0.90, "top_buyer": "Lagos Foods Ltd." },
   "Yam Flour (for Amala)": { "product": "Yam Flour", "current_price_per_kg": 3.00, "top_buyer": "Southwest Nigeria Distributors" },
   "Instant Pounded Yam Flour": { "product": "Instant Yam Flour", "current_price_per_kg": 3.50, "top_buyer": "Lagos Exporters" },
-  
+
   // India
   "Puffed Rice (Muri)": { "product": "Puffed Rice", "current_price_per_kg": 1.10, "top_buyer": "Delhi Snack Co." },
   "Rice Bran Oil": { "product": "Rice Bran Oil", "current_price_per_kg": 2.20, "top_buyer": "India Edible Oils" },
@@ -99,13 +99,13 @@ const marketData = {
 app.get('/process', (req, res) => {
   const crop = req.query.crop_name;
   const country = req.query.country;
-  
+
   if (!country || !crop) {
     return res.status(400).json({ error: "Country and crop_name are required." });
   }
-  
+
   const data = processingData[country] && processingData[country][crop];
-  
+
   if (data) {
     res.json(data);
   } else {
@@ -132,7 +132,7 @@ app.get('/finance', (req, res) => {
 app.get('/market', (req, res) => {
   const product = req.query.product_name;
   const data = marketData[product];
-  
+
   if (data) {
     res.json(data);
   } else {

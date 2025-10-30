@@ -8,9 +8,9 @@ info:
   version: "1.1.0"
   description: "Localized skills for the AgroSphere Agent (Cameroon, Nigeria, India) for value-add processing, finance, and market access."
 
-# This URL will come from Vercel after you deploy.
+# This URL will come from Vercel after deploy.
 servers:
-  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app/
+  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app
     description: "Localized Mock API Server (Vercel)"
 
 # This section defines the 3 skills our agent will learn.
