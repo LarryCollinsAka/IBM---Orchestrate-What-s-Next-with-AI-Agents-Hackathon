@@ -1,0 +1,5 @@
+commodity,grade,currency,min_price,max_price,avg_price,market,week_ending
+cassava_tuber,A,NGN,210,260,235,Ibadan,2025-10-24
+cassava_tuber,A,NGN,180,220,200,Lagos,2025-10-24
+cassava_tuber,A,INR,7,11,9,Kerala,2025-10-24
+cassava_tuber,A,XAF,90,120,105,Douala,2025-10-24
