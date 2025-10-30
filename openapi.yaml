@@ -1,0 +1,128 @@
+# =============================================================
+#  openapi.yaml
+# =============================================================
+
+openapi: 3.0.0
+info:
+  title: "AgroSphere Localized Agent Skills"
+  version: "1.1.0"
+  description: "Localized skills for the AgroSphere Agent (Cameroon, Nigeria, India) for value-add processing, finance, and market access."
+
+# This URL will come from Vercel after you deploy.
+servers:
+  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app/
+    description: "Localized Mock API Server (Vercel)"
+
+# This section defines the 3 skills our agent will learn.
+paths:
+  # Skill 1: Processing Planner
+  /process:
+    get:
+      summary: "Get Local Crop Processing Options"
+      description: "Given a crop type, quantity, and COUNTRY, return localized processing options, yield, and profit."
+      operationId: "getProcessingOptions"
+      parameters:
+        - name: crop_name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The name of the raw crop (e.g., 'Cassava', 'Maize', 'Rice')."
+        - name: quantity_kg
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: "The quantity of the raw crop in kilograms."
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The country of operation (e.g., 'Cameroon', 'Nigeria', 'India')."
+      responses:
+        '200':
+          description: "A list of localized processing options."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProcessingOption" 
+
+  # Skill 2: Finance Finder
+  /finance:
+    get:
+      summary: "Find Local Equipment Financing"
+      description: "Given a COUNTRY, finds local micro-finance (MFI) and digital inclusion options."
+      operationId: "getFinanceOptions"
+      parameters:
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The country to search for financing in (e.g., 'Cameroon', 'Nigeria', 'India')."
+      responses:
+        '200':
+          description: "A list of localized financing options."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FinanceOption" 
+
+  # Skill 3: Market Access
+  /market:
+    get:
+      summary: "Get Market Price for Processed Good"
+      description: "Given a processed product, gets the current market price."
+      operationId: "getMarketPrice"
+      parameters:
+        - name: product_name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The name of the processed product (e.g., 'Gari', 'Puffed Rice')."
+      responses:
+        '200':
+          description: "Market price and buyer information."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketData"
+
+# 'components/schemas' defines the reusable data structures.
+components:
+  schemas:
+    ProcessingOption:
+      type: object
+      properties:
+        option_name:
+          type: string
+        output_yield_kg:
+          type: integer
+        est_profit_usd:
+          type: number
+        equipment_needed:
+          type: string
+    FinanceOption:
+      type: object
+      properties:
+        funder_name:
+          type: string
+        loan_details:
+          type: string
+        contact_url:
+          type: string
+    MarketData:
+      type: object
+      properties:
+        product:
+          type: string
+        current_price_per_kg:
+          type: number
+        top_buyer:
+          type: string
