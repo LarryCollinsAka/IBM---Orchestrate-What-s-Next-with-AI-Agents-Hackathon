@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   web:
@@ -25,7 +24,10 @@ services:
       - ./:/app
     
     command: >
-      bash -lc "pip install --no-cache-dir fastapi uvicorn &&
+      bash -lc "apt-get update &&
+                apt-get install -y gcc libffi-dev libssl-dev && 
+                pip install --upgrade pip &&
+                pip install --no-cache-dir fastapi uvicorn &&
                 uvicorn src.api.mock_tools:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
