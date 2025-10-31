@@ -2,7 +2,6 @@
  * =============================================================
  * index.js
  * =============================================================
- * NEW: Added automatic currency conversion to XAF, NGN, and INR.
  */
 
 const express = require('express');
