@@ -2,21 +2,25 @@
  * =============================================================
  * index.js
  * =============================================================
- * (Cameroon: Cassava, Cocoa, Palm Oil)
- * (India: Rice, Wheat)
- * (Nigeria: Yam, Cassava, Maize)
+ * NEW: Added automatic currency conversion to XAF, NGN, and INR.
  */
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3000; // Vercel will manage this
+const port = 3000; 
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors()); 
 app.use(express.json());
 
-// --- FINALIZED Localized Mock Data (Based on Team Chat) ---
+// --- NEW: Exchange Rates ---
+const exchangeRates = {
+  "Cameroon": { code: "XAF", rate: 615 }, // 1 USD = 615 XAF
+  "Nigeria": { code: "NGN", rate: 1250 }, // 1 USD = 1250 NGN
+  "India": { code: "INR", rate: 83 }    // 1 USD = 83 INR
+};
 
+// --- Data (Prices are now in USD to be converted) ---
 const processingData = {
   "Cameroon": {
     "Cassava": [
@@ -56,9 +60,7 @@ const processingData = {
     ]
   }
 };
-
-// --- Digital Inclusion (Finance) Data ---
-const financeData = {
+const financeData = { /* (This data is just text, no changes needed) */
   "Cameroon": [
     { "funder_name": "CAMCCUL (Credit Union)", "loan_details": "Agri-Loan, 7% interest", "contact_url": "www.camccul.org" },
     { "funder_name": "MTN Mobile Money", "loan_details": "Small Business Wallet", "contact_url": "www.mtn.cm" }
@@ -72,79 +74,93 @@ const financeData = {
     { "funder_name": "Paytm (Payments Bank)", "loan_details": "Merchant Services", "contact_url": "www.paytm.com" }
   ]
 };
-
-// --- Market Data (Updated with new products) ---
-const marketData = {
-  // Cameroon
-  "Gari": { "product": "Gari", "current_price_per_kg": 1.20, "top_buyer": "West Africa Exporters" },
-  "Bobolo (Cassava Sticks)": { "product": "Bobolo", "current_price_per_kg": 1.50, "top_buyer": "Yaoundé Markets" },
-  "Refined Palm Oil (RBD)": { "product": "Refined Palm Oil", "current_price_per_kg": 1.80, "top_buyer": "Global Foods Inc." },
-  "Cocoa Powder": { "product": "Cocoa Powder", "current_price_per_kg": 4.50, "top_buyer": "EU Importers" },
-
-  // Nigeria
-  "Ogi (Pap)": { "product": "Ogi (Pap)", "current_price_per_kg": 0.90, "top_buyer": "Lagos Foods Ltd." },
-  "Yam Flour (for Amala)": { "product": "Yam Flour", "current_price_per_kg": 3.00, "top_buyer": "Southwest Nigeria Distributors" },
-  "Instant Pounded Yam Flour": { "product": "Instant Yam Flour", "current_price_per_kg": 3.50, "top_buyer": "Lagos Exporters" },
-
-  // India
-  "Puffed Rice (Muri)": { "product": "Puffed Rice", "current_price_per_kg": 1.10, "top_buyer": "Delhi Snack Co." },
-  "Rice Bran Oil": { "product": "Rice Bran Oil", "current_price_per_kg": 2.20, "top_buyer": "India Edible Oils" },
-  "Atta Flour (Whole Wheat)": { "product": "Atta Flour", "current_price_per_kg": 0.80, "top_buyer": "India Grains Corp." }
+const marketData = { // NEW: Prices are now in USD
+  "Gari": { "product": "Gari", "current_price_per_kg_usd": 1.20, "top_buyer": "West Africa Exporters" },
+  "Bobolo (Cassava Sticks)": { "product": "Bobolo", "current_price_per_kg_usd": 1.50, "top_buyer": "Yaoundé Markets" },
+  "Refined Palm Oil (RBD)": { "product": "Refined Palm Oil", "current_price_per_kg_usd": 1.80, "top_buyer": "Global Foods Inc." },
+  "Cocoa Powder": { "product": "Cocoa Powder", "current_price_per_kg_usd": 4.50, "top_buyer": "EU Importers" },
+  "Ogi (Pap)": { "product": "Ogi (Pap)", "current_price_per_kg_usd": 0.90, "top_buyer": "Lagos Foods Ltd." },
+  "Yam Flour (for Amala)": { "product": "Yam Flour", "current_price_per_kg_usd": 3.00, "top_buyer": "Southwest Nigeria Distributors" },
+  "Instant Pounded Yam Flour": { "product": "Instant Yam Flour", "current_price_per_kg_usd": 3.50, "top_buyer": "Lagos Exporters" },
+  "Puffed Rice (Muri)": { "product": "Puffed Rice", "current_price_per_kg_usd": 1.10, "top_buyer": "Delhi Snack Co." },
+  "Rice Bran Oil": { "product": "Rice Bran Oil", "current_price_per_kg_usd": 2.20, "top_buyer": "India Edible Oils" },
+  "Atta Flour (Whole Wheat)": { "product": "Atta Flour", "current_price_per_kg_usd": 0.80, "top_buyer": "India Grains Corp." }
 };
 
+// --- Our 3 API "Skills" (UPDATED) ---
 
-// --- Our 3 API "Skills" (No changes needed here) ---
-
-// Skill 1: Processing Planner
+// Skill 1: Processing Planner (UPDATED)
 app.get('/process', (req, res) => {
   const crop = req.query.crop_name;
   const country = req.query.country;
-
+  
   if (!country || !crop) {
     return res.status(400).json({ error: "Country and crop_name are required." });
   }
-
+  
   const data = processingData[country] && processingData[country][crop];
+  const rateInfo = exchangeRates[country];
 
-  if (data) {
-    res.json(data);
+  if (data && rateInfo) {
+    // NEW: Localize currency
+    const localizedData = data.map(option => {
+      const localizedProfit = option.est_profit_usd * rateInfo.rate;
+      return {
+        option_name: option.option_name,
+        output_yield_kg: option.output_yield_kg,
+        equipment_needed: option.equipment_needed,
+        est_profit_local: localizedProfit.toFixed(0), // Round to whole number
+        local_currency_code: rateInfo.code
+      };
+    });
+    res.json(localizedData); // Send the new localized data
   } else {
-    res.json([]); // Return an empty array if no data found
+    res.json([]); 
   }
 });
 
-// Skill 2: Finance Finder (Digital Inclusion)
+// Skill 2: Finance Finder (No changes needed)
 app.get('/finance', (req, res) => {
   const country = req.query.country;
   if (!country) {
     return res.status(400).json({ error: "Country is required." });
   }
-
   const data = financeData[country];
-  if (data) {
-    res.json(data);
-  } else {
-    res.json([]);
-  }
+  if (data) { res.json(data); } else { res.json([]); }
 });
 
-// Skill 3: Market Access
+// Skill 3: Market Access (UPDATED)
 app.get('/market', (req, res) => {
   const product = req.query.product_name;
-  const data = marketData[product];
+  const country = req.query.country; // NEW: Country is now required
 
-  if (data) {
-    res.json(data);
+  if (!country || !product) {
+    return res.status(400).json({ error: "Country and product_name are required." });
+  }
+
+  const data = marketData[product];
+  const rateInfo = exchangeRates[country];
+  
+  if (data && rateInfo) {
+    const localizedPrice = data.current_price_per_kg_usd * rateInfo.rate;
+    res.json({
+      product: data.product,
+      current_price_local: localizedPrice.toFixed(2), // Keep 2 decimal places
+      local_currency_code: rateInfo.code,
+      top_buyer: data.top_buyer
+    });
   } else {
-    // Fallback for products not in our small mock DB
-    res.json({ "product": product, "current_price_per_kg": 1.0, "top_buyer": "Local General Market" });
+    // Fallback
+    const fallbackRate = rateInfo ? rateInfo.rate : 1;
+    const fallbackCode = rateInfo ? rateInfo.code : "USD";
+    res.json({ "product": product, "current_price_local": (1.0 * fallbackRate).toFixed(2), "local_currency_code": fallbackCode, "top_buyer": "Local General Market" });
   }
 });
 
 // --- Start the Server ---
 app.listen(port, () => {
-  console.log(`AgroSphere *Localized* Mock API listening...`);
+  console.log(`AgroSphere *Localized* Mock API (v3) listening...`);
 });
 
-// Vercel needs this export to run as a serverless function
+// Vercel needs this export
 module.exports = app;
