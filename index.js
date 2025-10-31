@@ -158,7 +158,7 @@ app.get('/market', (req, res) => {
 
 // --- Start the Server ---
 app.listen(port, () => {
-  console.log(`AgroSphere *Localized* Mock API (v3) listening...`);
+  console.log(`AgroSphere *Localized* Mock API listening...`);
 });
 
 // Vercel needs this export
