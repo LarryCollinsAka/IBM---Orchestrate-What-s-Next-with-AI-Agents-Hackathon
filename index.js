@@ -8,16 +8,15 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3000; 
 
 
+const PORT = process.env.PORT || 3000;
 
 app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`AgroSphere Localized Mock API listening on ${PORT} ...`);
-});
+app.get('/health', (req, res) => res.json({ ok: true }));
 
 // --- NEW: Exchange Rates ---
 const exchangeRates = {
@@ -163,10 +162,11 @@ app.get('/market', (req, res) => {
   }
 });
 
-// --- Start the Server ---
-app.listen(port, () => {
-  console.log(`AgroSphere *Localized* Mock API listening...`);
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`AgroSphere *Localized* Mock API listening on port ${PORT}...`);
 });
 
 // Vercel needs this export
+
 module.exports = app;
