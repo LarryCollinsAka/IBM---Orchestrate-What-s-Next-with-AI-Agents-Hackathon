@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
   title: "AgroSphere Localized Agent Skills"
-  version: "3.0.0"
-  description: "Localized skills (v3) for the AgroSphere Agent with local currency."
+  version: "3.0.0" 
+  description: "Localized skills (v3) for the AgroSphere Agent with local currency for processing, finance, and market prices."
 
 servers:
-  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app #Vercel URL
+  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app 
     description: "Localized Mock API Server (Vercel)"
 
 paths:
@@ -45,7 +45,7 @@ paths:
         - name: country
           in: query
           required: true
-          schema: { "type":"string" }
+          schema: { "type": "string" }
           description: "The country to search for financing in (e.g., 'Cameroon', 'Nigeria', 'India')."
       responses:
         '200':
@@ -104,50 +104,4 @@ components:
         product: { "type": "string" }
         current_price_local: { "type": "string" }
         local_currency_code: { "type": "string" }
-        top_buyer: { "type":Two-step plan:**
-    1.  **Delete** all tools from your `AgroSphere` agent in Orchestrate.
-    2.  **Import** this new `openapi.yaml` (v3) file.
-
-This reverts us to our 100% stable, working build.
-
----
-
-### ## Step 3: Finalize the "Brain"
-
-Now we put all the logic into our `AgroSphere Agent`.
-
-1.  **Remove the Broken Agent:** Go to the **"Toolset"** tab and **DELETE** the "AgroSphere Advisor" collaborator. It is the source of our bug.
-2.  **Add Knowledge (The "Advisor"):** Go to the **"Knowledge"** tab and **UPLOAD ALL YOUR PDFs.** This is now our "Planting, Harvesting, and Storage Advisor."
-3.  **Set the Master Prompt:** Go to the **"Behavior"** tab, delete any "Guidelines," and in the main **"Instructions"** box, paste our **stable v8 prompt**:
-
-    ```
-    <role>
-    You are AgroSphere, an expert AI advisor for smallholder farmers. Your primary goal is to provide clear, practical, and profitable advice to improve their livelihood.
-    </role>
-    <rules>
-    * **CRITICAL (Location):** You MUST know the user's location (country and region) before giving advice. If you don't know the location, you MUST ask for it first.
-    * **RULE 1 (PROCESSING & FINANCE):**
-    For ANY question about "processing," "value-add," "profit," "equipment," or "local finance," you MUST use your **Custom Processing Tool** (e.g., `getProcessingOptions`, `getFinanceOptions`).
-    * **RULE 2 (PLANTING & FARMING):**
-    For ANY question about "planting," "harvesting," "storage," "climate," or "land use," you MUST search your "Knowledge" (the PDFs you have been given).
-    * **CRITICAL (Currency):** ALL financial answers (profit, price) MUST be given in the **local currency (NGN, XAF, INR)**.
-    * **Honesty:** If you cannot find an answer, apologize.
-    </routes>
-    <output_format>
-    * **Format:** You MUST format your final, combined answer using Markdown headings and bullet points for clarity.
-    * **Citations:** You MUST cite the source of your information (e.g., "(Source: CASSAVA-Production.pdf)").
-    </output_format>
-    ```
-
----
-
-
-This is it. Our agent is stable. It has Voice, Processing, and RAG (PDFs).
-
-Go to the **"Preview"** panel and **record your demo video** with these prompts:
-
-1.  **(Voice 🎙️):** "What are the processing options for 30 tonnes of Plantain in Cameroon?"
-2.  **(Voice 🎙️):** "What are the planting guidelines for cassava?"
-3.  **(Voice 🎙️):** "What financing options are there in Nigeria?"
-
-This is our stable, final build. We must stop experimenting and **record this demo now.**
+        top_buyer: { "type": "string" }
