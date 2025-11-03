@@ -7,18 +7,13 @@
  */
 const express = require('express');
 const cors = require('cors');
-const { XMLHttpRequest } = require("xmlhttprequest"); 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// --- CONFIGURATION ---
-// This is the "Research Agent" (from Agent Lab)
-const RESEARCH_AGENT_URL = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/39156981-89e2-4977-be57-f8e1bf097280/ai_service_stream?version=2021-05-01";
-// This is our Vercel Environment Variable
-const IAM_API_KEY = process.env.IAM_API_KEY; 
+
 
 // --- START: INTERNAL "PROCESSING" SKILLS (Our v3 Logic) ---
 const exchangeRates = {
@@ -64,58 +59,6 @@ const marketData = {
   "Atta Flour (Whole Wheat)": { "product": "Atta Flour", "current_price_per_kg_usd": 0.80, "top_buyer": "India Grains Corp." }
 };
 // --- END: INTERNAL "PROCESSING" SKILLS ---
-
-
-// --- START: EXTERNAL "ADVISOR" SKILLS (Our Collaborator) ---
-function getToken() {
-  return new Promise((resolve, reject) => {
-    if (!IAM_API_KEY) {
-      return reject(new Error("IAM_API_KEY is not set. Check Vercel Environment Variables."));
-    }
-    const req = new XMLHttpRequest();
-    req.addEventListener("load", () => resolve(JSON.parse(req.responseText)));
-    req.addEventListener("error", (err) => reject("Token Error: " + err));
-    req.open("POST", "https://iam.cloud.ibm.com/identity/token");
-    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    req.setRequestHeader("Accept", "application/json");
-    req.send(`grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${IAM_API_KEY}`);
-  });
-}
-
-function callResearchAgent(token, query) {
-  return new Promise((resolve, reject) => {
-    const payload = JSON.stringify({ messages: [{ role: "user", content: query }] });
-    const oReq = new XMLHttpRequest();
-    oReq.addEventListener("load", () => resolve(JSON.parse(oReq.responseText)));
-    oReq.addEventListener("error", (err) => reject("Agent Call Error: " + err));
-    oReq.open("POST", RESEARCH_AGENT_URL);
-    oReq.setRequestHeader("Accept", "application/json");
-    oReq.setRequestHeader("Authorization", "Bearer " + token);
-    oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    oReq.send(payload);
-  });
-}
-
-// This is the single, powerful function our "Advisor" skills will all call
-async function getExpertAdvice(query) {
-  try {
-    const tokenResponse = await getToken();
-    const agentResponse = await callResearchAgent(tokenResponse.access_token, query);
-    
-    // Extract the text from the Research Agent's response
-    if (agentResponse.messages && agentResponse.messages[1] && agentResponse.messages[1].content) {
-      return { advice: agentResponse.messages[1].content, source: "AgroSphere Research Advisor" };
-    } else {
-      // Handle "No chunks returned" or other agent-side errors
-      console.error("Agent Response Error:", agentResponse);
-      return { advice: "My research specialist (AgroSphere Advisor) was unable to find an answer for that specific query.", source: "AgroSphere Research Advisor" };
-    }
-  } catch (error) {
-    console.error(error);
-    return { error: `Failed to contact the Research Advisor: ${error.message}` };
-  }
-}
-// --- END: EXTERNAL "ADVISOR" SKILLS ---
 
 
 // --- API ENDPOINTS (Our "Skills" for Orchestrate) ---
