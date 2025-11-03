@@ -1,24 +1,19 @@
-# =============================================================
-# openapi.yaml
-# =============================================================
-# NEW: Updated to use localized currency and added 'country' to /market
-#
 openapi: 3.0.0
 info:
-  title: "AgroSphere Localized Agent Skills"
-  version: "1.2.0" 
-  description: "Localized skills for the AgroSphere Agent with local currency."
+  title: "AgroSphere Super-Agent Skills"
+  version: "1.0.0" 
+  description: "A supervisor API that provides internal processing data AND collaborates with an external research agent for planting, harvesting, and storage."
 
 servers:
-  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app # Your Vercel URL
-    description: "Localized Mock API Server (Vercel)"
+  - url: https://ibm-orchestrate-what-s-next-with-ai.vercel.app
+    description: "AgroSphere Supervisor API (Vercel)"
 
 paths:
-  # Skill 1: Processing Planner 
+  # --- INTERNAL SKILLS ---
   /process:
     get:
       summary: "Get Local Crop Processing Options"
-      description: "Given a crop type, quantity, and COUNTRY, return localized processing options (with local currency)."
+      description: "Gets localized processing options, profit, and equipment for a specific crop and country."
       operationId: "getProcessingOptions"
       parameters:
         - name: crop_name
@@ -26,11 +21,6 @@ paths:
           required: true
           schema: { "type": "string" }
           description: "The name of the raw crop (e.g., 'Cassava', 'Maize', 'Rice')."
-        - name: quantity_kg
-          in: query
-          required: true
-          schema: { "type": "integer" }
-          description: "The quantity of the raw crop in kilograms."
         - name: country
           in: query
           required: true
@@ -46,7 +36,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/ProcessingOption" 
 
-  # Skill 2: Finance Finder 
   /finance:
     get:
       summary: "Find Local Equipment Financing"
@@ -68,7 +57,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/FinanceOption" 
 
-  # Skill 3: Market Access
   /market:
     get:
       summary: "Get Local Market Price for Processed Good"
@@ -91,7 +79,62 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MarketData" # 
+                $ref: "#/components/schemas/MarketData"
+  
+  # --- COLLABORATOR (ADVISOR) SKILLS ---
+  /planting-advice:
+    get:
+      summary: "Get Expert Planting Advice"
+      description: "Gets expert advice on planting, climate, and land use from the 'Research Advisor' agent."
+      operationId: "getPlantingAdvice"
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { "type": "string" }
+          description: "The farmer's full question (e.g., 'What is the best season for planting plantains in Cameroon?')"
+      responses:
+        '200':
+          description: "The expert advice."
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdvisorResponse" }
+  
+  /harvesting-advice:
+    get:
+      summary: "Get Expert Harvesting Advice"
+      description: "Gets expert advice on harvesting techniques from the 'Research Advisor' agent."
+      operationId: "getHarvestingAdvice"
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { "type": "string" }
+          description: "The farmer's full question (e.g., 'How do I harvest yams properly?')"
+      responses:
+        '200':
+          description: "The expert advice."
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdvisorResponse" }
+
+  /storage-advice:
+    get:
+      summary: "Get Expert Storage Advice"
+      description: "Gets expert advice on storage techniques from the 'Research Advisor' agent."
+      operationId: "getStorageAdvice"
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { "type": "string" }
+          description: "The farmer's full question (e.g., 'How do I store yams to prevent rot?')"
+      responses:
+        '200':
+          description: "The expert advice."
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdvisorResponse" }
 
 # 'components/schemas'
 components:
@@ -99,33 +142,30 @@ components:
     ProcessingOption:
       type: object
       properties:
-        option_name:
-          type: string
-        output_yield_kg:
-          type: integer
-        equipment_needed:
-          type: string
-        est_profit_local: # NEW
-          type: string
-        local_currency_code: # NEW
-          type: string
+        option_name: { "type": "string" }
+        output_yield_kg: { "type": "integer" }
+        equipment_needed: { "type": "string" }
+        est_profit_local: { "type": "string" }
+        local_currency_code: { "type": "string" }
     FinanceOption:
       type: object
       properties:
-        funder_name:
-          type: string
-        loan_details:
-          type: string
-        contact_url:
-          type: string
-    MarketData: # UPDATED
+        funder_name: { "type": "string" }
+        loan_details: { "type": "string" }
+        contact_url: { "type": "string" }
+    MarketData:
       type: object
       properties:
-        product:
+        product: { "type": "string" }
+        current_price_local: { "type": "string" }
+        local_currency_code: { "type": "string" }
+        top_buyer: { "type": "string" }
+    AdvisorResponse:
+      type: object
+      properties:
+        advice:
           type: string
-        current_price_local: # NEW
+        source:
           type: string
-        local_currency_code: # NEW
-          type: string
-        top_buyer:
+        error:
           type: string
