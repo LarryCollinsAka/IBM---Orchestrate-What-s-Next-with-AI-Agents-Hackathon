@@ -1,0 +1,204 @@
+Processing Options – Quick Playbook 
+
+Scope: low-capex, smallholder-friendly value addition for priority crops in Nigeria, Cameroon, India.
+Use: This guide is a reference for the agent’s planning step (yield, shelf-life, packaging, feasibility prompts). Costs are indicative and should be labeled as assumptions unless verified.
+
+1) Decision Inputs (what the agent must ask/assume)
+
+
+Crop & form: e.g., cassava (fresh root), maize (dry grain), rice (paddy).
+
+
+Quantity & timeline: e.g., 3 tons within 7 days.
+
+
+Location: nearest town/city (for weather + logistics).
+
+
+Budget (capex ceiling): e.g., ≤ USD 1,000 / ≤ USD 5,000.
+
+
+Target market: local retail, bulk buyer, co-op, export-prep (feasibility only).
+
+
+Utilities available: power (grid/generator), clean water, shaded/covered drying area.
+
+
+
+2) Recommended Options by Crop
+
+⚠️ Ranges below are indicative for micro/SME setups. Always attach “assumptions” and call tools (Weather, PriceFeed, CostCalc) before final ranking.
+
+2.1 Cassava (NG/CM)
+ProductYield (finished / 100 kg fresh)Shelf-lifeTypical PackagingIndicative Micro-CapexGari20–35 kg3–6 months (dry)25–50 kg PP bagsUSD 500–1,500Fufu paste40–60 kg3–5 days (fresh) / 3–6 months (flour)PE pouches / PP bagsUSD 600–1,500HQCF (flour)20–30 kg3–6 months25 kg PP bagsUSD 1,200–3,500
+Notes: Sun/covered drying affects feasibility; smoke/odour control for food safety; peel quality alters cyanide levels.
+
+2.2 Maize (NG/IN)
+ProductYield (finished / 100 kg grain)Shelf-lifePackagingIndicative Micro-CapexOgi (pap)80–95 kg (wet)3–5 days (fresh)Retail PE cups/pouchesUSD 400–1,200Maize grits60–80 kg3–6 months25 kg PP bagsUSD 800–2,500Maize flour70–90 kg3–6 months25 kg PP bagsUSD 800–2,500
+Notes: Aflatoxin risk—prefer properly dried grain (<13% moisture). Milling + sieve quality define texture grade.
+
+2.3 Yam (NG)
+ProductYield / 100 kg tuberShelf-lifePackagingCapexYam flour20–30 kg3–6 months25 kg PP bagsUSD 1,000–3,000Instant pounded yam flour18–25 kg3–6 months25 kg PP bagsUSD 1,500–4,000
+Notes: Slicing thickness + dryer performance drive color and yield.
+
+2.4 Rice (IN)
+ProductYield / 100 kg paddyShelf-lifePackagingCapexMilled rice (raw/boiled)55–70 kg6–9 months25–50 kg PP bagsUSD 2,000–10,000Puffed rice (muri)70–90 kg3–6 monthsRetail pouchesUSD 800–3,000Rice bran oil (crude)10–20 kg (oil)n/aDrumsUSD 3,000–12,000 (small expeller)
+
+2.5 Wheat (IN)
+ProductYield / 100 kg grainShelf-lifePackagingCapexAtta (whole-wheat flour)90–95 kg2–4 months25 kg bagsUSD 800–3,000Maida (refined flour)65–80 kg2–4 months25 kg bagsUSD 2,000–6,000
+
+2.6 Cocoa (CM)
+ProductYield basisShelf-lifePackagingCapexCocoa powderfrom nibs/paste6–12 monthsFoil/laminateUSD 2,000–8,000Cocoa butter40–55% of paste6–12 monthsFood-grade containersUSD 2,000–8,000
+
+2.7 Palm (CM/NG)
+ProductYield basisShelf-lifePackagingCapexRed palm oil (CPO)16–25% of FFB6–12 months (proper storage)Jerrycans/drumsUSD 1,500–8,000 (artisanal mill)Refined/bleached/deodorized (RBD)from CPO6–12 monthsJerrycans/drums+USD 3,000–10,000 (extra kit)
+
+3) Feasibility & Quality Checklist
+Weather / Drying
+
+
+If rain risk high next 5 days → prioritize covered/mechanical drying or wet products (e.g., ogi, fufu).
+
+
+If low humidity + sun → gari, flour products are favored.
+
+
+Food Safety
+
+
+Moisture targets: flours ≤ 12–13%.
+
+
+Aflatoxin control for maize/groundnuts—reject moldy grain.
+
+
+Clean water & sanitation for wet products (ogi/fufu).
+
+
+Utilities & Labour
+
+
+Power (grid/genset), water access, basic PPE.
+
+
+Labour availability for peeling, grating, frying, bagging.
+
+
+Packaging
+
+
+Wholesale: PP woven sacks (25–50 kg) with liners.
+
+
+Retail: food-grade pouches (optionally oxygen barrier).
+
+
+
+4) How the Agent Should Use This Document
+
+
+Collect inputs (crop, quantity, location, timeline, budget, market).
+
+
+Call tools
+
+
+Weather → feasibility note (“Risk: Low/Med/High; rec: covered drying”).
+
+
+CostCalc → unit cost & opex (simulate if unavailable; mark as assumption).
+
+
+PriceFeed → indicative min/avg/max price for product+market.
+
+
+
+
+Rank 2–3 options with a compact table:
+
+
+Option | Yield/kg per 100 kg raw | Unit cost | Est margin vs. price | Feasibility note | Capex band
+
+
+
+
+State assumptions clearly: data source/time, moisture targets, exchange rates.
+
+
+Offer next step: BOM list, simple SOP, buyer short-list if requested.
+
+
+
+5) Bill of Materials (starter templates)
+Gari (micro)
+
+
+Grater, press, fryer, sifter, trays, PP bags, pallet.
+
+
+Sanitation: gloves, aprons, hairnets.
+
+
+QA: moisture meter (optional), simple scale.
+
+
+Maize flour (micro)
+
+
+Dehuller (optional), mill, sieve, sealer, PP bags.
+
+
+QA: moisture meter (optional).
+
+
+Yam flour (micro)
+
+
+Slicer, dryer (solar/mech), mill, sieve, sealer, PP bags.
+
+
+
+6) Output Format (agent)
+Return structure for each option:
+{
+  "option_name": "Gari",
+  "yield_percent": 20-35,
+  "unit_cost_per_kg_usd": 0.15,
+  "capex_band_usd": "500-1500",
+  "shelf_life": "3-6 months (dry)",
+  "packaging": "25-50 kg PP bags",
+  "feasibility_note": "High rain risk; use covered drying",
+  "assumptions": [
+    "Simulated unit cost using CostCalc v1.0",
+    "Prices: PriceFeed (Ibadan) 2025-10-24"
+  ]
+}
+
+
+7) Regional Notes (quick)
+
+
+Nigeria: strong urban demand for gari, yam flour; weather variability in wet season.
+
+
+Cameroon: palm/cocoa value addition viable; transport to Douala/Yaoundé hubs.
+
+
+India: rice/wheat processing common; puffed rice fast-moving in retail.
+
+
+
+8) Disclaimers
+
+
+All yields/costs are indicative for micro/SME setups; validate locally.
+
+
+Weather & price signals are snapshots; always include date/market.
+
+
+Food regulations differ by country; ensure local compliance (labels, weights).
+
+
+
+End of playbook.
